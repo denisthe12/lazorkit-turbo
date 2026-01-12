@@ -8,7 +8,6 @@ import { Card } from "@/components/ui/card";
 import { Fingerprint, LogOut, Copy, RefreshCw, Loader2, Zap } from "lucide-react";
 import { toast } from "sonner";
 import { DevWrapper } from "@/components/dev/DevWrapper";
-import { WALLET_CODE } from "@/lib/snippets";
 
 export function WalletView() {
   const { connect, disconnect, isConnected, isConnecting, wallet } = useWallet();
@@ -140,7 +139,7 @@ export function WalletView() {
           </p>
         </div>
 
-        <DevWrapper title="Passkey Login" code={WALLET_CODE}>
+        <DevWrapper tutorialId="wallet-login">
           <Button 
             size="lg" 
             className="w-full max-w-xs h-12 text-md font-semibold bg-primary hover:bg-primary/90 shadow-[0_0_20px_rgba(147,51,234,0.3)] transition-all"

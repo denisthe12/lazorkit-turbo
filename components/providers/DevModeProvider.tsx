@@ -1,35 +1,34 @@
 "use client";
 
 import { createContext, useContext, useState, ReactNode } from "react";
+import { Tutorial, TUTORIALS } from "@/lib/tutorials";
 
 interface DevModeContextType {
   isDevMode: boolean;
   toggleDevMode: () => void;
-  // Данные для отображения в шторке
-  codeSnippet: { title: string; code: string } | null;
-  openSnippet: (title: string, code: string) => void;
-  closeSnippet: () => void;
+  activeTutorial: Tutorial | null;
+  openTutorial: (tutorialId: string) => void;
+  closeTutorial: () => void;
 }
 
 const DevModeContext = createContext<DevModeContextType | undefined>(undefined);
 
 export function DevModeProvider({ children }: { children: ReactNode }) {
   const [isDevMode, setIsDevMode] = useState(false);
-  const [codeSnippet, setCodeSnippet] = useState<{ title: string; code: string } | null>(null);
+  const [activeTutorial, setActiveTutorial] = useState<Tutorial | null>(null);
 
   const toggleDevMode = () => setIsDevMode(!isDevMode);
   
-  const openSnippet = (title: string, code: string) => {
-    // Открываем код только если режим включен
-    if (isDevMode) {
-      setCodeSnippet({ title, code });
+  const openTutorial = (tutorialId: string) => {
+    if (isDevMode && TUTORIALS[tutorialId]) {
+      setActiveTutorial(TUTORIALS[tutorialId]);
     }
   };
 
-  const closeSnippet = () => setCodeSnippet(null);
+  const closeTutorial = () => setActiveTutorial(null);
 
   return (
-    <DevModeContext.Provider value={{ isDevMode, toggleDevMode, codeSnippet, openSnippet, closeSnippet }}>
+    <DevModeContext.Provider value={{ isDevMode, toggleDevMode, activeTutorial, openTutorial, closeTutorial }}>
       {children}
     </DevModeContext.Provider>
   );

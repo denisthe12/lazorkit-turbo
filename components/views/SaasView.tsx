@@ -9,7 +9,6 @@ import { ShieldCheck, Loader2, Clock, Check } from "lucide-react";
 import { SystemProgram, PublicKey, LAMPORTS_PER_SOL } from "@solana/web3.js";
 import { toast } from "sonner";
 import { DevWrapper } from "@/components/dev/DevWrapper";
-import { SAAS_CODE } from "@/lib/snippets";
 
 export function SaasView() {
   const { connect, isConnected, signAndSendTransaction, wallet } = useWallet();
@@ -146,7 +145,7 @@ export function SaasView() {
         </div>
 
         {!isSubscribed && (
-          <DevWrapper title="Subscription Logic" code={SAAS_CODE}>
+          <DevWrapper tutorialId="subscription">
             <Button 
               className="w-full bg-blue-600 hover:bg-blue-500 h-12 text-md font-bold"
               onClick={handleSubscribe}

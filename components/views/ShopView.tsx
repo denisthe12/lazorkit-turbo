@@ -9,7 +9,6 @@ import { Loader2, ShoppingBag, Zap } from "lucide-react";
 import { SystemProgram, PublicKey, LAMPORTS_PER_SOL } from "@solana/web3.js";
 import { toast } from "sonner";
 import { DevWrapper } from "@/components/dev/DevWrapper";
-import { SHOP_CODE } from "@/lib/snippets";
 
 export function ShopView() {
   const { connect, isConnected, signAndSendTransaction, wallet } = useWallet();
@@ -94,7 +93,7 @@ export function ShopView() {
             </div>
           </div>
 
-          <DevWrapper title="Gasless Buy Component" code={SHOP_CODE}>
+          <DevWrapper tutorialId="gasless-buy">
             <Button 
               className="w-full bg-primary hover:bg-primary/90 h-12 text-md font-bold"
               onClick={handleBuy}
