@@ -13,7 +13,7 @@ import { TransactionReceipt } from "@/components/feedback/TransactionReceipt"; /
 
 export function ShopView() {
   const { connect, isConnected, signAndSendTransaction, wallet } = useWallet();
-  const { addLog } = useLogs();
+  const { addLog, addSavings } = useLogs();
   const [buying, setBuying] = useState(false);
   
   // Состояние для чека
@@ -57,7 +57,7 @@ export function ShopView() {
         hash: signature,
         status: "success"
       });
-
+      addSavings();
       toast.dismiss();
       
       // ПОКАЗЫВАЕМ ЧЕК ВМЕСТО ТОСТА

@@ -1,6 +1,6 @@
 "use client";
 
-import { createContext, useContext, useState, ReactNode } from "react";
+import { createContext, useContext, useState, ReactNode, useEffect } from "react";
 import { toast } from "sonner";
 
 export type LogType = "transaction" | "signature" | "login" | "error";
@@ -9,7 +9,7 @@ export interface LogItem {
   id: string;
   type: LogType;
   title: string;
-  hash?: string; // Если есть хеш транзакции
+  hash?: string;
   timestamp: Date;
   status: "success" | "error";
 }
@@ -17,12 +17,22 @@ export interface LogItem {
 interface LogsContextType {
   logs: LogItem[];
   addLog: (item: Omit<LogItem, "id" | "timestamp">) => void;
+  // Новое: Сэкономленный газ
+  savedAmount: number;
+  addSavings: () => void;
 }
 
 const LogsContext = createContext<LogsContextType | undefined>(undefined);
 
 export function LogsProvider({ children }: { children: ReactNode }) {
   const [logs, setLogs] = useState<LogItem[]>([]);
+  const [savedAmount, setSavedAmount] = useState(0);
+
+  // Восстанавливаем сохраненное значение при загрузке
+  useEffect(() => {
+    const saved = localStorage.getItem("lazor_savings");
+    if (saved) setSavedAmount(parseFloat(saved));
+  }, []);
 
   const addLog = (item: Omit<LogItem, "id" | "timestamp">) => {
     const newLog = {
@@ -30,10 +40,8 @@ export function LogsProvider({ children }: { children: ReactNode }) {
       id: Math.random().toString(36).substring(7),
       timestamp: new Date(),
     };
-    // Добавляем новый лог в начало списка
     setLogs((prev) => [newLog, ...prev]);
     
-    // Дублируем в тост для наглядности
     if (item.status === "success") {
       toast.success(item.title);
     } else {
@@ -41,8 +49,14 @@ export function LogsProvider({ children }: { children: ReactNode }) {
     }
   };
 
+  const addSavings = () => {
+    const newAmount = savedAmount + 0.05; // Каждая транзакция экономит $0.05 (примерно)
+    setSavedAmount(newAmount);
+    localStorage.setItem("lazor_savings", newAmount.toString());
+  };
+
   return (
-    <LogsContext.Provider value={{ logs, addLog }}>
+    <LogsContext.Provider value={{ logs, addLog, savedAmount, addSavings }}>
       {children}
     </LogsContext.Provider>
   );

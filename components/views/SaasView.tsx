@@ -13,7 +13,7 @@ import { TransactionReceipt } from "@/components/feedback/TransactionReceipt"; /
 
 export function SaasView() {
   const { connect, isConnected, signAndSendTransaction, wallet } = useWallet();
-  const { addLog } = useLogs();
+  const { addLog, addSavings } = useLogs();
   
   const [loading, setLoading] = useState(false);
   const [isSubscribed, setIsSubscribed] = useState(false);
@@ -75,7 +75,7 @@ export function SaasView() {
         hash: signature,
         status: "success"
       });
-      
+      addSavings();
       toast.dismiss();
       
       // ПОКАЗЫВАЕМ ЧЕК
