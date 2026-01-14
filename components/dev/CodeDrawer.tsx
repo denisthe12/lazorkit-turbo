@@ -3,11 +3,12 @@
 import { useDevMode } from "@/components/providers/DevModeProvider";
 import { Sheet, SheetContent, SheetHeader, SheetTitle } from "@/components/ui/sheet";
 import { Button } from "@/components/ui/button";
-import { Copy, Check, ChevronRight, ChevronLeft, BookOpen, PlayCircle, Code2 } from "lucide-react";
+import { Copy, Check, ChevronRight, ChevronLeft, BookOpen, PlayCircle, Code2, Network } from "lucide-react";
 import { useState, useEffect } from "react";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { SmartCode } from "./SmartCode";
 import { LiveTracer } from "./LiveTracer"; // Импорт
+import { ArchGraph } from "./ArchGraph";
 
 export function CodeDrawer() {
   const { activeTutorial, closeTutorial } = useDevMode();
@@ -15,7 +16,8 @@ export function CodeDrawer() {
   const [currentStep, setCurrentStep] = useState(0);
   
   // Режим просмотра: "code" или "simulate"
-  const [viewMode, setViewMode] = useState<"code" | "simulate">("code");
+  const [viewMode, setViewMode] = useState<"code" | "simulate" | "arch">("code");
+  
 
   useEffect(() => {
     setCurrentStep(0);
@@ -53,10 +55,10 @@ export function CodeDrawer() {
             </div>
 
             {/* Mode Switcher */}
-            <div className="flex bg-white/5 rounded-lg p-1 border border-white/10">
+            <div className="flex bg-white/5 rounded-lg p-1 border border-white/10 gap-1">
               <button
                 onClick={() => setViewMode("code")}
-                className={`flex items-center gap-2 px-3 py-1.5 rounded-md text-xs font-medium transition-all ${
+                className={`flex items-center gap-1.5 px-2.5 py-1.5 rounded-md text-[10px] font-medium transition-all ${
                   viewMode === "code" ? "bg-blue-600 text-white" : "text-gray-400 hover:text-white"
                 }`}
               >
@@ -64,11 +66,19 @@ export function CodeDrawer() {
               </button>
               <button
                 onClick={() => setViewMode("simulate")}
-                className={`flex items-center gap-2 px-3 py-1.5 rounded-md text-xs font-medium transition-all ${
+                className={`flex items-center gap-1.5 px-2.5 py-1.5 rounded-md text-[10px] font-medium transition-all ${
                   viewMode === "simulate" ? "bg-purple-600 text-white" : "text-gray-400 hover:text-white"
                 }`}
               >
-                <PlayCircle className="w-3.5 h-3.5" /> Simulate
+                <PlayCircle className="w-3.5 h-3.5" /> Sim
+              </button>
+              <button
+                onClick={() => setViewMode("arch")}
+                className={`flex items-center gap-1.5 px-2.5 py-1.5 rounded-md text-[10px] font-medium transition-all ${
+                  viewMode === "arch" ? "bg-orange-600 text-white" : "text-gray-400 hover:text-white"
+                }`}
+              >
+                <Network className="w-3.5 h-3.5" /> Arch
               </button>
             </div>
           </div>
@@ -76,8 +86,12 @@ export function CodeDrawer() {
 
         {/* CONTENT SWITCHER */}
         {viewMode === "simulate" ? (
-          // SIMULATION MODE
           <LiveTracer scenarioId={activeTutorial.id} />
+        ) : viewMode === "arch" ? (
+          // ARCH MODE
+          <ScrollArea className="flex-1 bg-[#0d1117]">
+            <ArchGraph />
+          </ScrollArea>
         ) : (
           // CODE MODE (Старый контент)
           <>
