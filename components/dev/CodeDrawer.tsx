@@ -6,6 +6,7 @@ import { Button } from "@/components/ui/button";
 import { Copy, Check, ChevronRight, ChevronLeft, BookOpen } from "lucide-react";
 import { useState, useEffect } from "react";
 import { ScrollArea } from "@/components/ui/scroll-area";
+import { SmartCode } from "./SmartCode";
 
 export function CodeDrawer() {
   const { activeTutorial, closeTutorial } = useDevMode();
@@ -105,10 +106,9 @@ export function CodeDrawer() {
               </div>
 
               {/* Code Content */}
-              <pre className="p-4 overflow-x-auto">
-                <code className="font-mono text-sm leading-relaxed text-gray-300">
-                  {activeTutorial.steps[currentStep].code}
-                </code>
+              <pre className="p-4 overflow-x-auto pb-10"> 
+                {/* Вместо обычного code используем SmartCode */}
+                <SmartCode code={activeTutorial.steps[currentStep].code} />
               </pre>
             </div>
           </div>
