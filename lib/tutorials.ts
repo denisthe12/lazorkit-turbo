@@ -80,9 +80,11 @@ export function LoginButton() {
         code: `import { SystemProgram, PublicKey, LAMPORTS_PER_SOL } from "@solana/web3.js";
 
 // Example: Transfer 0.001 SOL (or USDC)
+const shopAddress = new PublicKey("G2FAbFQPFa5qKXCetoFZQEvF9BVvCKbvUZvodpVidnoY");
+
 const instruction = SystemProgram.transfer({
-  fromPubkey: wallet.smartWallet, // User's Smart Wallet PDA
-  toPubkey: new PublicKey("MERCHANT_ADDRESS"),
+  fromPubkey: wallet.smartWallet, 
+  toPubkey: shopAddress,
   lamports: 0.001 * LAMPORTS_PER_SOL,
 });`
       },
@@ -123,8 +125,16 @@ const handleBuy = async () => {
         language: "tsx",
         code: `const activateSubscription = async () => {
   // 1. Send Payment (Gasless)
+  const serviceAddress = new PublicKey("4kg8oh3jdNtn7j2wcS7TrUua31AgbLzDVkBZgTAe44aF");
+
   const sig = await signAndSendTransaction({
-    instructions: [/* Transfer Instruction to SaaS Wallet */],
+    instructions: [
+      SystemProgram.transfer({
+        fromPubkey: wallet.smartWallet,
+        toPubkey: serviceAddress,
+        lamports: 0.005 * LAMPORTS_PER_SOL
+      })
+    ],
     transactionOptions: { feeToken: 'USDC' }
   });
 

@@ -9,6 +9,7 @@ import { ShieldCheck, Loader2, Clock, Check } from "lucide-react";
 import { SystemProgram, PublicKey, LAMPORTS_PER_SOL } from "@solana/web3.js";
 import { toast } from "sonner";
 import { DevWrapper } from "@/components/dev/DevWrapper";
+import { TransactionReceipt } from "@/components/feedback/TransactionReceipt"; // Импорт
 
 export function SaasView() {
   const { connect, isConnected, signAndSendTransaction, wallet } = useWallet();
@@ -17,8 +18,10 @@ export function SaasView() {
   const [loading, setLoading] = useState(false);
   const [isSubscribed, setIsSubscribed] = useState(false);
   const [nextBilling, setNextBilling] = useState<Date | null>(null);
+  
+  // Состояние чека
+  const [receiptData, setReceiptData] = useState<any>(null);
 
-  // Проверяем LocalStorage при загрузке (имитация базы данных)
   useEffect(() => {
     const subData = localStorage.getItem("saas_subscription");
     if (subData) {
@@ -38,30 +41,25 @@ export function SaasView() {
       setLoading(true);
       toast.loading("Activating Subscription (Payment)...");
 
-      // 1. Создаем транзакцию ОПЛАТЫ (как в магазине)
-      // Адрес сервиса SaaS (куда уходят деньги)
-      const serviceAddress = new PublicKey("7XH4b6yQ5S7Hj2w2w2w2w2w2w2w2w2w2w2w2w2w2w2w"); 
+      const serviceAddress = new PublicKey("4kg8oh3jdNtn7j2wcS7TrUua31AgbLzDVkBZgTAe44aF"); 
       
       const instruction = SystemProgram.transfer({
         fromPubkey: new PublicKey(wallet.smartWallet),
-        toPubkey: serviceAddress,
-        lamports: 0.005 * LAMPORTS_PER_SOL, // Цена подписки
+        toPubkey: serviceAddress, // Шлем платформе
+        lamports: 0.005 * LAMPORTS_PER_SOL,
       });
 
-      // 2. Отправляем в блокчейн
       const signature = await signAndSendTransaction({
         instructions: [instruction],
         transactionOptions: {
           feeToken: "USDC",
-          computeUnitLimit: 100_000,
+          //computeUnitLimit: 50_000,
+          //clusterSimulation: 'devnet'
         }
       });
 
-      console.log("Subscription Tx:", signature);
-
-      // 3. Сохраняем "подписку" локально
       const nextDate = new Date();
-      nextDate.setSeconds(nextDate.getSeconds() + 30); // MVP: След. оплата через 30 сек
+      nextDate.setSeconds(nextDate.getSeconds() + 30);
       
       localStorage.setItem("saas_subscription", JSON.stringify({
         active: true,
@@ -71,24 +69,28 @@ export function SaasView() {
       setIsSubscribed(true);
       setNextBilling(nextDate);
 
-      // 4. Логируем как ТРАНЗАКЦИЮ (теперь Solscan будет работать!)
       addLog({
         type: "transaction",
         title: "Activated Pro Plan ($5)",
-        hash: signature, // <-- Это настоящий хеш транзакции
+        hash: signature,
         status: "success"
       });
       
       toast.dismiss();
-      toast.success("Subscription Active!", {
-        description: "Payment successful on Devnet"
+      
+      // ПОКАЗЫВАЕМ ЧЕК
+      setReceiptData({
+        type: "subscription",
+        title: "Pro Access (Monthly)",
+        amount: "0.005 SOL", // или $5.00
+        signature: signature,
+        timestamp: new Date()
       });
 
     } catch (e: any) {
       console.error(e);
       toast.dismiss();
       toast.error("Subscription Failed");
-      
       addLog({
         type: "error",
         title: "Subscription Failed",
@@ -101,6 +103,12 @@ export function SaasView() {
 
   return (
     <div className="p-4 space-y-6 animate-in fade-in">
+      <TransactionReceipt 
+        open={!!receiptData} 
+        onOpenChange={(open) => !open && setReceiptData(null)}
+        data={receiptData}
+      />
+
       <div className="space-y-1">
         <h2 className="text-2xl font-bold text-white">SaaS Plans</h2>
         <p className="text-gray-400 text-xs">Recurring crypto payments</p>
@@ -124,7 +132,6 @@ export function SaasView() {
               <Clock className="w-4 h-4 text-primary" />
               <span>Next billing in:</span>
             </div>
-            {/* Для демо просто показываем время */}
             <div className="text-xl font-mono text-white">
               ~30 seconds
             </div>

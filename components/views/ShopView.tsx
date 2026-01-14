@@ -9,11 +9,15 @@ import { Loader2, ShoppingBag, Zap } from "lucide-react";
 import { SystemProgram, PublicKey, LAMPORTS_PER_SOL } from "@solana/web3.js";
 import { toast } from "sonner";
 import { DevWrapper } from "@/components/dev/DevWrapper";
+import { TransactionReceipt } from "@/components/feedback/TransactionReceipt"; // Импорт
 
 export function ShopView() {
   const { connect, isConnected, signAndSendTransaction, wallet } = useWallet();
   const { addLog } = useLogs();
   const [buying, setBuying] = useState(false);
+  
+  // Состояние для чека
+  const [receiptData, setReceiptData] = useState<any>(null);
 
   const handleBuy = async () => {
     if (!isConnected || !wallet) {
@@ -25,28 +29,28 @@ export function ShopView() {
       setBuying(true);
       toast.loading("Processing Gasless Transaction...");
 
-      // 1. Создаем транзакцию перевода 0.001 SOL
-      // Адрес "магазина" (для теста можно рандомный или свой)
-      const shopAddress = new PublicKey("H4spT3bH2P5hJg3h2w2w2w2w2w2w2w2w2w2w2w2w2w2w"); 
+      // Адрес смарт-кошелька (сам себе для теста)
+      const shopAddress = new PublicKey("G2FAbFQPFa5qKXCetoFZQEvF9BVvCKbvUZvodpVidnoY"); 
       
       const instruction = SystemProgram.transfer({
         fromPubkey: new PublicKey(wallet.smartWallet),
-        toPubkey: shopAddress,
+        toPubkey: shopAddress, // Теперь шлем магазину, а не себе
         lamports: 0.001 * LAMPORTS_PER_SOL,
       });
 
-      // 2. Отправляем через LazorKit
       const signature = await signAndSendTransaction({
         instructions: [instruction],
         transactionOptions: {
-          feeToken: "USDC", // Указание Paymaster'у
-          computeUnitLimit: 100_000,
+          feeToken: "USDC",
+          // ВАЖНО: Возвращаем лимит, но ставим адекватный для перевода
+          computeUnitLimit: 50_000, 
+          // ВАЖНО: Пробуем forced simulation (иногда помогает)
+          clusterSimulation: 'devnet' 
         }
       });
 
       console.log("Purchase Sig:", signature);
       
-      // 3. Логируем успех
       addLog({
         type: "transaction",
         title: "Bought Cyber Sneakers",
@@ -54,21 +58,40 @@ export function ShopView() {
         status: "success"
       });
 
+      toast.dismiss();
+      
+      // ПОКАЗЫВАЕМ ЧЕК ВМЕСТО ТОСТА
+      setReceiptData({
+        type: "purchase",
+        title: "Cyber Sneakers",
+        amount: "0.001 SOL",
+        signature: signature,
+        timestamp: new Date()
+      });
+
     } catch (e: any) {
       console.error(e);
+      toast.dismiss();
       addLog({
         type: "error",
         title: "Purchase Failed",
         status: "error"
       });
+      toast.error("Transaction Failed");
     } finally {
       setBuying(false);
-      toast.dismiss();
     }
   };
 
   return (
     <div className="p-4 space-y-6 animate-in fade-in">
+      {/* Рендерим диалог чека */}
+      <TransactionReceipt 
+        open={!!receiptData} 
+        onOpenChange={(open) => !open && setReceiptData(null)}
+        data={receiptData}
+      />
+
       <div className="space-y-1">
         <h2 className="text-2xl font-bold text-white">Lazor Shop</h2>
         <p className="text-gray-400 text-xs">Gas fees sponsored by Paymaster</p>
