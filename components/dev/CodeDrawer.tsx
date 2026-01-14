@@ -3,12 +3,13 @@
 import { useDevMode } from "@/components/providers/DevModeProvider";
 import { Sheet, SheetContent, SheetHeader, SheetTitle } from "@/components/ui/sheet";
 import { Button } from "@/components/ui/button";
-import { Copy, Check, ChevronRight, ChevronLeft, BookOpen, PlayCircle, Code2, Network } from "lucide-react";
+import { Copy, Check, ChevronRight, ChevronLeft, BookOpen, PlayCircle, Code2, Network, AlertTriangle } from "lucide-react";
 import { useState, useEffect } from "react";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { SmartCode } from "./SmartCode";
 import { LiveTracer } from "./LiveTracer"; // Импорт
 import { ArchGraph } from "./ArchGraph";
+import { ErrorGuide } from "./ErrorGuide";
 
 export function CodeDrawer() {
   const { activeTutorial, closeTutorial } = useDevMode();
@@ -16,7 +17,7 @@ export function CodeDrawer() {
   const [currentStep, setCurrentStep] = useState(0);
   
   // Режим просмотра: "code" или "simulate"
-  const [viewMode, setViewMode] = useState<"code" | "simulate" | "arch">("code");
+  const [viewMode, setViewMode] = useState<"code" | "simulate" | "arch" | "errors">("code");
   
 
   useEffect(() => {
@@ -80,6 +81,14 @@ export function CodeDrawer() {
               >
                 <Network className="w-3.5 h-3.5" /> Arch
               </button>
+              <button
+                onClick={() => setViewMode("errors")}
+                className={`flex items-center gap-1.5 px-2.5 py-1.5 rounded-md text-[10px] font-medium transition-all ${
+                  viewMode === "errors" ? "bg-red-600 text-white" : "text-gray-400 hover:text-white"
+                }`}
+              >
+                <AlertTriangle className="w-3.5 h-3.5" /> Fix
+              </button>
             </div>
           </div>
         </SheetHeader>
@@ -91,6 +100,10 @@ export function CodeDrawer() {
           // ARCH MODE
           <ScrollArea className="flex-1 bg-[#0d1117]">
             <ArchGraph />
+          </ScrollArea>
+        ) : viewMode === "errors" ? (
+          <ScrollArea className="flex-1 bg-[#0d1117]">
+            <ErrorGuide />
           </ScrollArea>
         ) : (
           // CODE MODE (Старый контент)
