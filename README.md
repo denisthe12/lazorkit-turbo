@@ -4,7 +4,18 @@
 
 [![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https%3A%2F%2Fgithub.com%2FYOUR_USERNAME%2Flazorkit-turbo)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
-[![LazorKit SDK](https://img.shields.io/badge/LazorKit-SDK%20v2-purple)](https://lazor.sh)
+[![LazorKit SDK](https://img.shields.io/badge/LazorKit-SDK%20v2-purple)](https://docs.lazorkit.com/)
+
+---
+
+---
+
+<div align="center">
+  <h3>User Experience &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Developer Experience</h3>
+  <img src="/Usermode.gif" width="45%" alt="User Mode Demo" />
+  &nbsp;&nbsp;
+  <img src="/Devmode.gif" width="45%" alt="Dev Mode Demo" />
+</div>
 
 ---
 
@@ -98,6 +109,100 @@ See how to send SPL transfers where the merchant pays the network fee, creating 
 Implement a subscription model where users sign a transaction once to authorize payments.
 
 ---
+
+## 📚 Step-by-Step Guides
+
+LazorKit Turbo includes built-in interactive tutorials, but here is a quick reference for the core concepts required by the Hackathon.
+
+### Guide 1: How to create a Passkey-based Wallet
+
+To onboard users without seed phrases, wrap your app with the Provider and use the `connect()` hook.
+
+**1. Configure Provider (layout.tsx)**
+
+```tsx
+import { LazorKitProvider } from "@lazorkit/wallet";
+
+export function App({ children }) {
+  return (
+    <LazorKitProvider
+      rpcUrl="https://api.devnet.solana.com"
+      paymasterConfig={{
+        paymasterUrl: "https://kora.devnet.lazorkit.com" // Kora Paymaster
+      }}
+    >
+      {children}
+    </LazorKitProvider>
+  );
+}
+```
+
+**2. Trigger Login (Component)**
+
+```tsx
+import { useWallet } from "@lazorkit/wallet";
+
+export function LoginBtn() {
+  const { connect, isConnecting } = useWallet();
+  // This triggers the browser's native FaceID/TouchID dialog
+  return <button onClick={() => connect()}>Login with Passkey</button>;
+}
+```
+
+---
+
+### Guide 2: How to trigger a Gasless Transaction
+
+LazorKit allows users with 0 SOL to interact with the blockchain by using a Paymaster.
+
+**1. Create a Standard Solana Instruction**
+
+```tsx
+import { SystemProgram, PublicKey, LAMPORTS_PER_SOL } from "@solana/web3.js";
+
+const transferIx = SystemProgram.transfer({
+  fromPubkey: wallet.smartWallet, // The user's PDA address
+  toPubkey: new PublicKey("MERCHANT_ADDRESS"),
+  lamports: 0.01 * LAMPORTS_PER_SOL,
+});
+```
+
+**2. Send with Sponsorship**
+
+```tsx
+const { signAndSendTransaction } = useWallet();
+
+await signAndSendTransaction({
+  instructions: [transferIx],
+  transactionOptions: {
+    // Setting feeToken tells the Paymaster to sponsor the SOL fee
+    feeToken: "USDC",
+    // Optional: Optimize limits for complex instructions
+    computeUnitLimit: 50_000 
+  }
+});
+```
+
+---
+
+### Guide 3: How to Persist Session
+
+LazorKit handles session persistence automatically via LocalStorage, but you need to handle the UI state correctly to prevent "flickering".
+
+```tsx
+const { isConnected } = useWallet();
+const [isReady, setIsReady] = useState(false);
+
+useEffect(() => {
+  // LazorKit takes ~500ms to restore session from storage
+  if (isConnected) {
+    setIsReady(true);
+  }
+}, [isConnected]);
+
+if (!isReady) return <LoadingSpinner />;
+return <Dashboard />;
+```
 
 ## 🔧 Troubleshooting
 
