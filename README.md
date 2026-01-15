@@ -70,7 +70,7 @@ Go from Zero to Hero in less than 2 minutes.
 ### 1. Clone the Repo
 
 ```bash
-git clone https://github.com/YOUR_USERNAME/lazorkit-turbo.git
+git clone https://github.com/denisthe12/lazorkit-turbo.git
 cd lazorkit-turbo
 ```
 
@@ -203,6 +203,8 @@ useEffect(() => {
 if (!isReady) return <LoadingSpinner />;
 return <Dashboard />;
 ```
+
+---
 
 ## 🔧 Troubleshooting
 
