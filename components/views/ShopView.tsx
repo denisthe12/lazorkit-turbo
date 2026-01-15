@@ -72,12 +72,29 @@ export function ShopView() {
     } catch (e: any) {
       console.error(e);
       toast.dismiss();
-      addLog({
-        type: "error",
-        title: "Purchase Failed",
-        status: "error"
-      });
-      toast.error("Transaction Failed");
+      
+      // SMART ERROR HANDLING
+      const errorMessage = e.message || JSON.stringify(e);
+      
+      if (errorMessage.includes("Transaction too large") || errorMessage.includes("1232")) {
+        addLog({
+          type: "error",
+          title: "SDK Limit: WebAuthn Payload too big", // Объясняем причину
+          status: "error"
+        });
+        toast.error("Transaction Limit Exceeded", {
+          description: "Browser generated too much metadata. Please try again.",
+        });
+      } else {
+        addLog({
+          type: "error",
+          title: "Purchase Failed",
+          status: "error"
+        });
+        toast.error("Transaction Failed", {
+          description: "See Dev Mode > Fix for details."
+        });
+      }
     } finally {
       setBuying(false);
     }
