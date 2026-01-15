@@ -8,13 +8,11 @@
 
 ---
 
----
-
 <div align="center">
   <h3>User Experience &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Developer Experience</h3>
-  <img src="/Usermode.gif" width="45%" alt="User Mode Demo" />
+  <img src="./public/Usermode.gif" width="45%" alt="User Mode Demo" />
   &nbsp;&nbsp;
-  <img src="/Devmode.gif" width="45%" alt="Dev Mode Demo" />
+  <img src="./public/Devmode.gif" width="45%" alt="Dev Mode Demo" />
 </div>
 
 ---
