@@ -229,4 +229,4 @@ If you encounter issues, open the **"Fix"** tab in the Dev Mode drawer.
 
 ---
 
-Built with ❤️ for the **LazorKit Hackathon 2025**.
+Built with ❤️ for the **LazorKit bounty 2026**.
