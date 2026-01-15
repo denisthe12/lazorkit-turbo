@@ -9,10 +9,17 @@
 ---
 
 <div align="center">
-  <h3>User Experience &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Developer Experience</h3>
-  <img src="./public/Usermode.gif" width="45%" alt="User Mode Demo" />
-  &nbsp;&nbsp;
-  <img src="./public/Devmode.gif" width="45%" alt="Dev Mode Demo" />
+  <!-- USER MODE: Делаем поуже, как телефон -->
+  <h3>📱 User Experience (Mobile-First)</h3>
+  <p><i>Seedless onboarding and Gasless transactions in seconds.</i></p>
+  <img src="./public/Usermode.gif" width="35%" alt="User Mode Demo" />
+
+  <br/><br/>
+
+  <!-- DEV MODE: Растягиваем на всю ширину -->
+  <h3>💻 Developer Experience (Interactive Studio)</h3>
+  <p><i>Built-in Code Generator, Architecture Graph, and Execution Tracer.</i></p>
+  <img src="./public/Devmode.gif" width="100%" alt="Dev Mode Demo" />
 </div>
 
 ---
