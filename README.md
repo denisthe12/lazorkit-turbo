@@ -12,9 +12,8 @@
   <!-- USER MODE: Делаем поуже, как телефон -->
   <h3>📱 User Experience (Mobile-First)</h3>
   <p><i>Seedless onboarding and Gasless transactions in seconds.</i></p>
-  <img src="./public/Usermode.gif" width="35%" alt="User Mode Demo" />
+  <img src="./public/Usermode.gif" width="45%" alt="User Mode Demo" />
 
-  <br/><br/>
 
   <!-- DEV MODE: Растягиваем на всю ширину -->
   <h3>💻 Developer Experience (Interactive Studio)</h3>
