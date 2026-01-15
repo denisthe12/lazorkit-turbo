@@ -2,6 +2,9 @@
 > **The Ultimate Interactive Starter Kit for Passkey-Native Solana Apps.**  
 > *Build Gasless, Seedless, and Smart Wallet experiences in minutes.*
 
+[![Live Demo](https://img.shields.io/badge/🚀_Live_Demo-Open_App-green?style=for-the-badge)](https://lazorkit-turbo.vercel.app)
+
+
 [![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https%3A%2F%2Fgithub.com%2FYOUR_USERNAME%2Flazorkit-turbo)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![LazorKit SDK](https://img.shields.io/badge/LazorKit-SDK%20v2-purple)](https://docs.lazorkit.com/)
